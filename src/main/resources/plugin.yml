@@ -1,0 +1,5 @@
+main: com.perceivedev.uskyfix.uSkyFix
+name: uSkyFix
+description: A PlaceholderAPI fix for uSkyBlock
+version: 1.0
+depend: [PlaceholderAPI,uSkyBlock]
