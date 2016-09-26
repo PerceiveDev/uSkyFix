@@ -11,3 +11,5 @@
 *.eml
 .DS_Store
 META-INF
+
+lib/uSkyBlock.jar

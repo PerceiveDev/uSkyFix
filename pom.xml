@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>PerceiveDev</groupId>
 	<artifactId>uSkyFix</artifactId>
-	<version>1.0</version>
+	<version>1.0.1</version>
 	<name>uSkyFix</name>
 	<description>A PlaceholderAPI fix for uSkyBlock</description>
 	<repositories>

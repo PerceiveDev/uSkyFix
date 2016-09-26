@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import me.clip.placeholderapi.external.EZPlaceholderHook;
 import us.talabrek.ultimateskyblock.uSkyBlock;
+import us.talabrek.ultimateskyblock.api.IslandInfo;
 
 /**
  * @author Rayzr
@@ -41,6 +42,9 @@ public class uSkyFix extends JavaPlugin {
                 }
                 if (identifier.equals("island_level")) {
                     return String.format("%.2f", uSkyBlock.getAPI().getIslandLevel(p));
+                } else if (identifier.equals("island_leader")) {
+                    IslandInfo info = uSkyBlock.getAPI().getIslandInfo(p.getLocation());
+                    return info == null ? "None" : info.getLeader();
                 }
                 return null;
             }
