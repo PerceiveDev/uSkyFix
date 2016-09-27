@@ -1,5 +1,10 @@
 main: com.perceivedev.uskyfix.uSkyFix
 name: uSkyFix
 description: Fixes and additions for uSkyBlock
-version: 1.1.0
+version: 1.1.1
 depend: [PlaceholderAPI,uSkyBlock]
+commands:
+    uskyfix:
+        description: The main command for uSkyFix
+        aliases: [usf]
+        usage: Rayzr forgot to register his commands again...

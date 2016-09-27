@@ -64,9 +64,10 @@ public class uSkyFix extends JavaPlugin {
 
             }
 
-        }.runTaskTimer(this, 0L, 1200L);
+        }.runTaskTimer(this, 0L, 3 * 60 * 20);
 
         getServer().getPluginManager().registerEvents(new SignListener(this), this);
+        getCommand("uskyfix").setExecutor(new CommandHandler(this));
 
         logger.info(versionText() + " enabled");
     }

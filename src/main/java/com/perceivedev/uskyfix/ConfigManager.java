@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -29,8 +30,7 @@ import us.talabrek.ultimateskyblock.api.IslandLevel;
  */
 public class ConfigManager {
 
-    public static final int CONFIG_VERSION = 1;
-
+    public static final int CONFIG_VERSION = 2;
     private List<Location>  signs          = new ArrayList<Location>();
 
     private uSkyFix         plugin;
@@ -38,11 +38,16 @@ public class ConfigManager {
 
     public String           permissionSignPlace;
     public String           permissionSignBreak;
+    public String           permissionCommand;
 
     public String           messageSignPlaced;
     public String           messageSignBroken;
     public String           messageNoPermission;
     public String           messageError;
+    public String           messageVersion;
+    public String           messageCommandUsage;
+    public String           messageConfigReloaded;
+    public String           messageRefreshed;
 
     public ConfigManager(uSkyFix plugin) {
         this.plugin = plugin;
@@ -51,6 +56,9 @@ public class ConfigManager {
 
     @SuppressWarnings("unchecked")
     public void load() {
+
+        plugin.reloadConfig();
+
         File folder = plugin.getDataFolder();
         if (!folder.exists()) {
             folder.mkdirs();
@@ -75,11 +83,16 @@ public class ConfigManager {
 
         permissionSignPlace = config.getString("permissions.place-sign");
         permissionSignBreak = config.getString("permissions.break-sign");
+        permissionCommand = config.getString("permissions.command");
 
         messageSignPlaced = msg(config, "sign-placed");
         messageSignBroken = msg(config, "sign-broken");
         messageNoPermission = msg(config, "no-permission");
         messageError = msg(config, "error");
+        messageVersion = msg(config, "version");
+        messageCommandUsage = msg(config, "command-usage");
+        messageConfigReloaded = msg(config, "config-reloaded");
+        messageRefreshed = msg(config, "refreshed");
 
     }
 
@@ -172,15 +185,23 @@ public class ConfigManager {
      */
     public void update() {
         uSkyBlock.getInstance().getIslandLogic().generateTopTen(Bukkit.getConsoleSender());
-        for (Location loc : signs) {
-            update(loc);
+        Iterator<Location> iterator = signs.iterator();
+        while (iterator.hasNext()) {
+            Location loc = iterator.next();
+            if (!update(loc)) {
+                signs.remove(loc);
+            }
         }
     }
 
     /**
      * @param location
      */
-    public void update(Location loc) {
+    public boolean update(Location loc) {
+        if (!Signs.isLeaderboardSign(loc.getBlock())) {
+            signs.remove(loc);
+            return false;
+        }
         Block block = loc.getBlock();
 
         Sign sign = (Sign) block.getState();
@@ -190,7 +211,7 @@ public class ConfigManager {
 
         if (level == null) {
             setLines(sign, "&8&o" + place + suffix(place) + " place: ", "&4None", "");
-            return;
+            return true;
         }
 
         setLines(sign, "&8&o" + place + suffix(place) + " place: ", "&a&l" + level.getLeaderName(), "&2" + String.format("%.2f", level.getScore()));
@@ -203,6 +224,8 @@ public class ConfigManager {
                 skull.update();
             }
         }
+
+        return true;
 
     }
 

@@ -5,6 +5,7 @@ chat-prefix: "&8&l[&9uSkyFix&8&l]&r "
 permissions:
     place-sign: "uSkyFix.sign.place"
     break-sign: "uSkyFix.sign.break"
+    command: "uSkyFix.command"
 
 # These are all the messages for the plugin
 messages:
@@ -12,6 +13,10 @@ messages:
     sign-broken: "&bSign removed"
     no-permission: "&cYou dont' have permission to do that!"
     error: "&cSomething went wrong!"
+    version: "&bThis server is running &7{version}"
+    command-usage: "&bUsage: &7/uskyfix [reload|refresh]"
+    config-reloaded: "&bConfig reloaded"
+    refreshed: "&bLeaderboards refreshed"
 
 # Internal, don't change this
-config-version: 1
+config-version: 2

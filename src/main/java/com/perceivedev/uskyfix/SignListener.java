@@ -102,8 +102,8 @@ public class SignListener implements Listener {
     }
 
     private byte direction(Block sign) {
-        if (sign.getType() == Material.WALL_SIGN) {
-            return sign.getData();
+        if (sign.getType() == Material.SIGN_POST) {
+            return (byte) 0;
         } else {
             return sign.getData();
         }
