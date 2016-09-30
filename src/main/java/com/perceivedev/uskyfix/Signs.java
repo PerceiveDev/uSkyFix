@@ -16,10 +16,11 @@ import org.bukkit.block.Sign;
  */
 public class Signs {
 
-    private static Pattern regex = Pattern.compile("\\[usb([1-9]|10)\\]");
+    private static Pattern regex         = Pattern.compile("\\[usb([1-9]|10)\\]");
+    private static Pattern numberMatcher = Pattern.compile("([0-9]{1,}).*");
 
-    public static boolean isLeaderboardSign(Block sign) {
-        return sign.getState() instanceof Sign && isLeaderboardLine(((Sign) sign.getState()).getLine(0));
+    public static boolean isLeaderboardSign(Block sign, ConfigManager cm) {
+        return sign.getState() instanceof Sign && (isLeaderboardLine(((Sign) sign.getState()).getLine(0)) || cm.isSign(sign));
     }
 
     public static boolean isLeaderboardLine(String text) {
@@ -28,18 +29,54 @@ public class Signs {
 
     public static int getPlace(Block block) {
 
-        return getPlace(((Sign) block.getState()).getLine(0));
+        return getPlace(((Sign) block.getState()).getLine(1));
 
     }
 
     public static int getPlace(String text) {
 
-        Matcher matcher = regex.matcher(ChatColor.stripColor(text.toLowerCase()));
+        text = ChatColor.stripColor(text);
+        Matcher matcher = numberMatcher.matcher(text);
         if (!matcher.matches()) {
             return -1;
         }
 
         return Integer.parseInt(matcher.group(1));
+    }
+
+    public static int getPlaceOld(String text) {
+        text = ChatColor.stripColor(text.toLowerCase());
+        Matcher matcher = regex.matcher(text);
+        if (!matcher.matches()) {
+            return -1;
+        }
+
+        return Integer.parseInt(matcher.group(1));
+    }
+
+    public static String suffix(int number) {
+        switch (number) {
+        case 1:
+            return "st";
+        case 2:
+            return "nd";
+        case 3:
+            return "rd";
+        default:
+            return "th";
+        }
+    }
+
+    public static String[] setLines(Sign sign, int place, String line2, String line3) {
+        sign.setLine(1, color("&5" + place + suffix(place) + " place:"));
+        sign.setLine(2, color("&4" + line2));
+        sign.setLine(3, color("&c&l" + line3));
+        sign.update();
+        return sign.getLines();
+    }
+
+    public static String color(String text) {
+        return ChatColor.translateAlternateColorCodes('&', text);
     }
 
 }

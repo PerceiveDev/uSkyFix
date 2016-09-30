@@ -198,7 +198,7 @@ public class ConfigManager {
      * @param location
      */
     public boolean update(Location loc) {
-        if (!Signs.isLeaderboardSign(loc.getBlock())) {
+        if (!Signs.isLeaderboardSign(loc.getBlock(), this)) {
             signs.remove(loc);
             return false;
         }
@@ -207,14 +207,20 @@ public class ConfigManager {
         Sign sign = (Sign) block.getState();
 
         int place = Signs.getPlace(block);
-        IslandLevel level = uSkyBlock.getAPI().getTopTen().size() >= place ? uSkyBlock.getAPI().getTopTen().get(place - 1) : null;
 
-        if (level == null) {
-            setLines(sign, "&8&o" + place + suffix(place) + " place: ", "&4None", "");
+        if (place < 0) {
+            Signs.setLines(sign, place, "None", "");
             return true;
         }
 
-        setLines(sign, "&8&o" + place + suffix(place) + " place: ", "&a&l" + level.getLeaderName(), "&2" + String.format("%.2f", level.getScore()));
+        IslandLevel level = uSkyBlock.getAPI().getTopTen().size() >= place ? uSkyBlock.getAPI().getTopTen().get(place - 1) : null;
+
+        if (level == null) {
+            Signs.setLines(sign, place, "None", "");
+            return true;
+        }
+
+        Signs.setLines(sign, place, level.getLeaderName(), String.format("%.2f", level.getScore()));
 
         Block head = block.getRelative(BlockFace.UP);
         if (head != null && head.getType() == Material.SKULL) {
@@ -229,28 +235,20 @@ public class ConfigManager {
 
     }
 
-    private String suffix(int number) {
-        switch (number) {
-        case 1:
-            return "st";
-        case 2:
-            return "nd";
-        case 3:
-            return "rd";
-        default:
-            return "th";
-        }
+    /**
+     * @param sign
+     * @return
+     */
+    public boolean isSign(Block sign) {
+        return isSign(sign.getLocation());
     }
 
-    private void setLines(Sign sign, String line1, String line2, String line3) {
-        sign.setLine(1, color(line1));
-        sign.setLine(2, color(line2));
-        sign.setLine(3, color(line3));
-        sign.update();
-    }
-
-    private String color(String text) {
-        return ChatColor.translateAlternateColorCodes('&', text);
+    /**
+     * @param sign
+     * @return
+     */
+    public boolean isSign(Location sign) {
+        return signs.contains(sign);
     }
 
 }
