@@ -3,6 +3,13 @@
  */
 package com.perceivedev.uskyfix;
 
+import static com.perceivedev.uskyfix.Blocks.direction;
+import static com.perceivedev.uskyfix.Blocks.face;
+import static com.perceivedev.uskyfix.Signs.getPlaceOld;
+import static com.perceivedev.uskyfix.Signs.isLeaderboardLine;
+import static com.perceivedev.uskyfix.Signs.isLeaderboardSign;
+import static com.perceivedev.uskyfix.Signs.setLines;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
@@ -35,7 +42,7 @@ public class SignListener implements Listener {
 
     @EventHandler
     public void onSignPlace(SignChangeEvent e) {
-        if (!Signs.isLeaderboardLine(e.getLine(0))) {
+        if (!isLeaderboardLine(e.getLine(0))) {
             return;
         }
 
@@ -50,9 +57,9 @@ public class SignListener implements Listener {
             return;
         }
 
-        int place = Signs.getPlaceOld(e.getLine(0));
-        System.out.println("Place: " + place);
-        e.setLine(1, Signs.setLines((Sign) e.getBlock().getState(), place, "&4None", "")[1]);
+        int place = getPlaceOld(e.getLine(0));
+
+        e.setLine(1, setLines((Sign) e.getBlock().getState(), place, "&4None", "")[1]);
 
         e.setLine(0, ChatColor.translateAlternateColorCodes('&', "&1[Skyblock]"));
 
@@ -63,10 +70,11 @@ public class SignListener implements Listener {
 
         if (head != null && head.getType() == Material.AIR) {
             head.setType(Material.SKULL);
-            head.setData(direction(block));
+            head.setData((byte) 1);
             Skull skull = (Skull) head.getState();
             skull.setSkullType(SkullType.PLAYER);
-            skull.update();
+            skull.setRotation(face(direction(block)).getOppositeFace());
+            skull.update(true);
         }
 
         new BukkitRunnable() {
@@ -83,11 +91,11 @@ public class SignListener implements Listener {
     public void onBlockBreak(BlockBreakEvent e) {
         if (e.getBlock().getType() == Material.SKULL) {
             Block below = e.getBlock().getRelative(BlockFace.DOWN).getRelative(face(e.getBlock().getData()).getOppositeFace());
-            if (below != null && Signs.isLeaderboardSign(below, cm)) {
+            if (below != null && isLeaderboardSign(below, cm)) {
                 e.setCancelled(true);
             }
         }
-        if (!Signs.isLeaderboardSign(e.getBlock(), cm)) {
+        if (!isLeaderboardSign(e.getBlock(), cm)) {
             return;
         }
 
@@ -111,29 +119,6 @@ public class SignListener implements Listener {
 
         e.getPlayer().sendMessage(cm.messageSignBroken);
 
-    }
-
-    private byte direction(Block sign) {
-        if (sign.getType() == Material.SIGN_POST) {
-            return (byte) (sign.getData() % 4 - 1);
-        } else {
-            return sign.getData();
-        }
-    }
-
-    private BlockFace face(byte direction) {
-        switch (direction) {
-        case 2:
-            return BlockFace.SOUTH;
-        case 3:
-            return BlockFace.NORTH;
-        case 4:
-            return BlockFace.EAST;
-        case 5:
-            return BlockFace.WEST;
-        default:
-            return BlockFace.SELF;
-        }
     }
 
 }

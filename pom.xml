@@ -3,7 +3,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>PerceiveDev</groupId>
 	<artifactId>uSkyFix</artifactId>
-	<version>1.1.1</version>
 	<name>uSkyFix</name>
 	<description>Fixes and additions for uSkyBlock</description>
 	<repositories>
@@ -48,4 +47,5 @@
 			</resource>
 		</resources>
 	</build>
+	<version>1.1.2</version>
 </project>

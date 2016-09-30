@@ -3,6 +3,12 @@
  */
 package com.perceivedev.uskyfix;
 
+import static com.perceivedev.uskyfix.Blocks.direction;
+import static com.perceivedev.uskyfix.Blocks.face;
+import static com.perceivedev.uskyfix.Signs.getPlace;
+import static com.perceivedev.uskyfix.Signs.isLeaderboardSign;
+import static com.perceivedev.uskyfix.Signs.setLines;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -198,7 +204,7 @@ public class ConfigManager {
      * @param location
      */
     public boolean update(Location loc) {
-        if (!Signs.isLeaderboardSign(loc.getBlock(), this)) {
+        if (!isLeaderboardSign(loc.getBlock(), this)) {
             signs.remove(loc);
             return false;
         }
@@ -206,28 +212,32 @@ public class ConfigManager {
 
         Sign sign = (Sign) block.getState();
 
-        int place = Signs.getPlace(block);
+        int place = getPlace(block);
 
         if (place < 0) {
-            Signs.setLines(sign, place, "None", "");
+            setLines(sign, place, "None", "");
             return true;
         }
 
         IslandLevel level = uSkyBlock.getAPI().getTopTen().size() >= place ? uSkyBlock.getAPI().getTopTen().get(place - 1) : null;
 
         if (level == null) {
-            Signs.setLines(sign, place, "None", "");
+            setLines(sign, place, "None", "");
             return true;
         }
 
-        Signs.setLines(sign, place, level.getLeaderName(), String.format("%.2f", level.getScore()));
+        setLines(sign, place, level.getLeaderName(), String.format("%.2f", level.getScore()));
 
         Block head = block.getRelative(BlockFace.UP);
+        if (head != null) {
+            head = head.getRelative(face(direction(block)));
+        }
         if (head != null && head.getType() == Material.SKULL) {
             Skull skull = (Skull) head.getState();
             if (skull.getSkullType() == SkullType.PLAYER) {
                 skull.setOwner(level.getLeaderName());
-                skull.update();
+                skull.setRotation(face(direction(block)).getOppositeFace());
+                skull.update(true);
             }
         }
 
