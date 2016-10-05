@@ -18,5 +18,11 @@ messages:
     config-reloaded: "&bConfig reloaded"
     refreshed: "&bLeaderboards refreshed"
 
+sign-color:
+    1: "&1"
+    2: "&5"
+    3: "&4"
+    4: "&c&l"
+
 # Internal, don't change this
 config-version: 2

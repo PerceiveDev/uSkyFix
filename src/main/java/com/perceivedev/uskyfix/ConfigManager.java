@@ -55,6 +55,11 @@ public class ConfigManager {
     public String           messageConfigReloaded;
     public String           messageRefreshed;
 
+    public String           signColor1;
+    public String           signColor2;
+    public String           signColor3;
+    public String           signColor4;
+
     public ConfigManager(uSkyFix plugin) {
         this.plugin = plugin;
 
@@ -100,10 +105,21 @@ public class ConfigManager {
         messageConfigReloaded = msg(config, "config-reloaded");
         messageRefreshed = msg(config, "refreshed");
 
+        signColor1 = signColor(config, "1");
+        signColor2 = signColor(config, "2");
+        signColor3 = signColor(config, "3");
+        signColor4 = signColor(config, "4");
+        
+        Signs.setSignColors(signColor1, signColor2, signColor3, signColor4);
+
     }
 
     private String msg(YamlConfiguration config, String path) {
         return ChatColor.translateAlternateColorCodes('&', prefix + config.getString("messages." + path));
+    }
+
+    private String signColor(YamlConfiguration config, String path) {
+        return ChatColor.translateAlternateColorCodes('&', config.getString("sign-color." + path));
     }
 
     public void save() {

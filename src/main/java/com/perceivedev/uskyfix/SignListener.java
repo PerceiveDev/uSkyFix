@@ -8,9 +8,7 @@ import static com.perceivedev.uskyfix.Blocks.face;
 import static com.perceivedev.uskyfix.Signs.getPlaceOld;
 import static com.perceivedev.uskyfix.Signs.isLeaderboardLine;
 import static com.perceivedev.uskyfix.Signs.isLeaderboardSign;
-import static com.perceivedev.uskyfix.Signs.setLines;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.block.Block;
@@ -59,9 +57,7 @@ public class SignListener implements Listener {
 
         int place = getPlaceOld(e.getLine(0));
 
-        e.setLine(1, setLines((Sign) e.getBlock().getState(), place, "&4None", "")[1]);
-
-        e.setLine(0, ChatColor.translateAlternateColorCodes('&', "&1[Skyblock]"));
+        setLines(e, Signs.setLines((Sign) e.getBlock().getState(), place, "&4None", ""));
 
         Block head = e.getBlock().getRelative(BlockFace.UP);
         if (head != null) {
@@ -85,6 +81,16 @@ public class SignListener implements Listener {
 
         e.getPlayer().sendMessage(cm.messageSignPlaced);
 
+    }
+
+    /**
+     * @param e
+     * @param setLines
+     */
+    private void setLines(SignChangeEvent e, String[] setLines) {
+        for (int i = 0; i < setLines.length; i++) {
+            e.setLine(i, setLines[i]);
+        }
     }
 
     @EventHandler

@@ -18,6 +18,10 @@ public class Signs {
 
     private static Pattern regex         = Pattern.compile("\\[usb([1-9]|10)\\]");
     private static Pattern numberMatcher = Pattern.compile("([0-9]{1,}).*");
+    private static String  signColor1;
+    private static String  signColor2;
+    private static String  signColor3;
+    private static String  signColor4;
 
     public static boolean isLeaderboardSign(Block sign, ConfigManager cm) {
         return sign.getState() instanceof Sign && (isLeaderboardLine(((Sign) sign.getState()).getLine(0)) || cm.isSign(sign));
@@ -68,15 +72,29 @@ public class Signs {
     }
 
     public static String[] setLines(Sign sign, int place, String line2, String line3) {
-        sign.setLine(1, color("&5" + place + suffix(place) + " place:"));
-        sign.setLine(2, color("&4" + line2));
-        sign.setLine(3, color("&c&l" + line3));
+        sign.setLine(0, color(signColor1 + "[Skyblock]"));
+        sign.setLine(1, color(signColor2 + place + suffix(place) + " place:"));
+        sign.setLine(2, color(signColor3 + line2));
+        sign.setLine(3, color(signColor4 + line3));
         sign.update();
         return sign.getLines();
     }
 
     public static String color(String text) {
         return ChatColor.translateAlternateColorCodes('&', text);
+    }
+
+    /**
+     * @param signColor1
+     * @param signColor2
+     * @param signColor3
+     * @param signColor4
+     */
+    public static void setSignColors(String signColor1, String signColor2, String signColor3, String signColor4) {
+        Signs.signColor1 = signColor1;
+        Signs.signColor2 = signColor2;
+        Signs.signColor3 = signColor3;
+        Signs.signColor4 = signColor4;
     }
 
 }
