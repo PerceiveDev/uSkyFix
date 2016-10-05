@@ -15,7 +15,7 @@ public class Blocks {
 
     public static byte direction(Block sign) {
         if (sign.getType() == Material.SIGN_POST) {
-            return (byte) (sign.getData() % 4 - 1);
+            return dataFromSignpost(sign.getData());
         } else {
             return sign.getData();
         }
@@ -32,7 +32,22 @@ public class Blocks {
         case 5:
             return BlockFace.WEST;
         default:
-            return BlockFace.SELF;
+            return BlockFace.NORTH;
+        }
+    }
+
+    private static byte dataFromSignpost(int data) {
+        switch (data) {
+        case 0:
+            return (byte) 3;
+        case 4:
+            return (byte) 4;
+        case 8:
+            return (byte) 2;
+        case 12:
+            return (byte) 5;
+        default:
+            return (byte) 5;
         }
     }
 
