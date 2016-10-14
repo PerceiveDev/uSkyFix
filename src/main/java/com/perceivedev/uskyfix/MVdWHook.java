@@ -23,6 +23,12 @@ public class MVdWHook {
                 return String.format("%.2f", uSkyBlock.getAPI().getIslandLevel(e.getPlayer()));
             }
         });
+        PlaceholderAPI.registerPlaceholder(plugin, "uskyfix_island_global", new PlaceholderReplacer() {
+            public String onPlaceholderReplace(PlaceholderReplaceEvent e) {
+                IslandInfo info = uSkyBlock.getAPI().getIslandInfo(e.getPlayer().getLocation());
+                return info == null ? "None" : String.format("%.2f", info.getLevel());
+            }
+        });
         PlaceholderAPI.registerPlaceholder(plugin, "uskyfix_island_leader", new PlaceholderReplacer() {
             public String onPlaceholderReplace(PlaceholderReplaceEvent e) {
                 IslandInfo info = uSkyBlock.getAPI().getIslandInfo(e.getPlayer().getLocation());

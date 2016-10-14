@@ -26,6 +26,9 @@ public class PAPIHook {
                 }
                 if (identifier.equals("island_level")) {
                     return String.format("%.2f", uSkyBlock.getAPI().getIslandLevel(p));
+                } else if (identifier.equals("island_global")) {
+                    IslandInfo info = uSkyBlock.getAPI().getIslandInfo(p.getLocation());
+                    return info == null ? "None" : String.format("%.2f", info.getLevel());
                 } else if (identifier.equals("island_leader")) {
                     IslandInfo info = uSkyBlock.getAPI().getIslandInfo(p.getLocation());
                     return info == null ? "None" : info.getLeader();
