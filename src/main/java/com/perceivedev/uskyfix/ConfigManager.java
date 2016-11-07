@@ -109,7 +109,7 @@ public class ConfigManager {
         signColor2 = signColor(config, "2");
         signColor3 = signColor(config, "3");
         signColor4 = signColor(config, "4");
-        
+
         Signs.setSignColors(signColor1, signColor2, signColor3, signColor4);
 
     }
