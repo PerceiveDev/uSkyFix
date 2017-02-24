@@ -4,7 +4,7 @@
 	<groupId>com.perceivedev</groupId>
 	<artifactId>uskyfix</artifactId>
 	<name>uSkyFix</name>
-	<version>1.1.7</version>
+	<version>1.1.8</version>
 	<description>Fixes and additions for uSkyBlock</description>
 	<repositories>
 		<repository>

@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
  */
 public class CommandHandler implements CommandExecutor {
 
-    private uSkyFix       plugin;
+    private uSkyFix plugin;
     private ConfigManager cm;
 
     public CommandHandler(uSkyFix plugin) {
@@ -35,8 +35,8 @@ public class CommandHandler implements CommandExecutor {
 
         String sub = args[0].toLowerCase();
         if (sub.equals("reload")) {
-            cm.save();
-            cm.load();
+            plugin.reload();
+            
             p.sendMessage(cm.messageConfigReloaded);
         } else if (sub.equals("refresh")) {
             cm.update();

@@ -9,6 +9,12 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -24,7 +30,7 @@ import us.talabrek.ultimateskyblock.menu.SkyBlockMenu;
  */
 public class uSkyFix extends JavaPlugin {
 
-    private Logger        logger;
+    private Logger logger;
     private ConfigManager manager;
 
     @Override
@@ -32,13 +38,6 @@ public class uSkyFix extends JavaPlugin {
         logger = getLogger();
         manager = new ConfigManager(this);
         manager.load();
-
-        if (!Bukkit.getPluginManager().isPluginEnabled("uSkyBlock")) {
-            logger.severe("This pugin requires uSkyBlock! Also this plugin works better with PlaceholderAPI / MVdWPlaceholderAPI installed.");
-            logger.severe("Please download them before attempting to use this.");
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
 
         try {
 
@@ -64,7 +63,56 @@ public class uSkyFix extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new SignListener(this), this);
         getCommand("uskyfix").setExecutor(new CommandHandler(this));
 
+        new BukkitRunnable() {
+            public void run() {
+                wrapCommands();
+            }
+        }.runTaskLater(this, uSkyBlock.getAPI().getConfig().getLong("init.initDelay", 50L) + 2L);
+
         logger.info(versionText() + " enabled");
+    }
+
+    @Override
+    public void onDisable() {
+        manager.save();
+        logger.info(versionText() + " disabled");
+    }
+
+    public void reload() {
+        manager.save();
+        manager.load();
+        wrapCommands();
+    }
+
+    public void wrapCommands() {
+
+        final PluginCommand command = Bukkit.getPluginCommand("uSkyBlock:island");
+        command.setExecutor(new CommandExecutor() {
+            CommandExecutor original = command.getExecutor();
+
+            @Override
+            public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+                if (!(sender instanceof Player)) {
+                    return original.onCommand(sender, command, label, args);
+                }
+
+                StringBuilder raw = new StringBuilder("/").append(label);
+                for (String str : args) {
+                    raw.append(" ").append(str);
+                }
+
+                PlayerCommandPreprocessEvent evt = new PlayerCommandPreprocessEvent((Player) sender, raw.toString());
+                Bukkit.getPluginManager().callEvent(evt);
+
+                if (evt.isCancelled()) {
+                    return true;
+                }
+
+                return original.onCommand(sender, command, label, args);
+            }
+
+        });
+
     }
 
     private void startSignRefresh() {
@@ -83,12 +131,6 @@ public class uSkyFix extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
             MVdWHook.register(this);
         }
-    }
-
-    @Override
-    public void onDisable() {
-        manager.save();
-        logger.info(versionText() + " disabled");
     }
 
     public String versionText() {

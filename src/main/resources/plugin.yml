@@ -1,7 +1,7 @@
 main: com.perceivedev.uskyfix.uSkyFix
 name: uSkyFix
 description: Fixes and additions for uSkyBlock
-version: 1.1.7
+version: 1.1.8
 depend: [uSkyBlock]
 softdepend: [PlaceholderAPI,MVdWPlaceholderAPI]
 commands:
